@@ -13,7 +13,6 @@
 unsigned int g_windowWidth = 600;
 unsigned int g_windowHeight = 600;
 char* g_windowName = "HW1-Transform-Coding-Audio";
-bool temp = true;
 
 GLFWwindow* g_window;
 bool g_draw_origin = true;
@@ -48,17 +47,37 @@ void DCT(const float* A, float* C, int size)
 {
 	// TODO: part of Homework Task 1
 	// Use std::cos
-	int c = 1;
-	int u = 1;
-	if (temp)
+	float **Q = new float*[size];
+	for (int i = 0; i < size; i++)
+	{
+		Q[i] = new float[size];
+	}
+	float *c = new float[size];
+	float squared_vals;
+	for (int u = 0; u < size; u++)
 	{
 		for (int i = 0; i < size; i++)
 		{
-			std::cout << A[i] << std::endl;
-			std::cout << c * std::cos((2 * i + 1)*u*M_PI / 2 * size)*A[i] << std::endl;
+			Q[u][i] = std::cos(((2 * i + 1) * u * M_PI) / (2 * size));
 		}
 	}
-	temp = false;
+	for (int u = 0; u < size; u++)
+	{
+		squared_vals = 0.0;
+		for (int i = 0; i < size; i++)
+		{
+			squared_vals += Q[u][i] * Q[u][i];
+		}
+		c[u] = 1 / std::sqrt(squared_vals);
+		std::cout << c[u] << std::endl;
+	}
+	for (int u = 0; u < size; u++)
+	{
+		for (int i = 0; i < size; i++)
+		{
+			C[u] = c[u] * Q[u][i] * A[i];
+		}
+	}
 }
 void compress(float* C, int size, int m)
 {
@@ -69,17 +88,7 @@ void inverseDCT(const float* C, float* B, int size)
 {
 	// TODO: part of Homework Task 1
 	// Use std::cos
-	int c = 1;
-	int u = 1;
-	if (temp)
-	{
-		for (int i = 0; i < size; i++)
-		{
-			std::cout << C[i] << std::endl;
-			std::cout << c * std::cos((2 * i + 1)*u*M_PI / 2 * size)*C[i] << std::endl;
-		}
-	}
-	temp = false;
+
 }
 void processBlock(const float* A, float* B, int m)
 {
@@ -287,6 +296,7 @@ void loadWAVFile()
 
 int main()
 {
+	/*
 	loadWAVFile();
 
 	processWAVSignal();
@@ -297,6 +307,16 @@ int main()
 	initWindow();
 	initGL();
 	renderLoop();
-
+	*////*
+	const float A[4] = { 0, 1, 2, 3 };
+	float *C = new float[4];
+	DCT(A, C, 4);
+	for (int i = 0; i < 4; i++)
+	{
+		std::cout << C[i] << std::endl;
+	}
+	int temp;
+	std::cin >> temp;
+	//*/
 	return 0;
 }
